@@ -9,22 +9,51 @@ public class PlayerController : MonoBehaviour
     public float speed;
     private Rigidbody2D rb;
     private Vector2 moveVelocity;
+    bool jump = false, Grounded;
+    int j_counter = 0;
+    
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         
     }
-
+    
     // Update is called once per frame
     void Update()
     {
-        Vector2 moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        Vector2 moveInput = new Vector2(Input.GetAxis("Horizontal"),0);
         moveVelocity = moveInput.normalized * speed;
+        if (Input.GetButtonDown("Jump"))
+        {
+            jump = true;
+        }
     }
+
+    void IsGrounded() { 
+        Grounded = true;
+    }
+    void NotGrounded()
+    {
+        Grounded = false;
+    }
+
+    Vector2 JumpMove(Vector2 v)
+    {
+        Vector2 InputJump = new Vector2(0,10f);
+        InputJump= InputJump+v;
+        return InputJump;
+    }
+
+
 
     private void FixedUpdate()
     {
+        if (jump)
+        {
+           moveVelocity=JumpMove(moveVelocity);
+           jump = false;
+        }
         rb.MovePosition(rb.position + moveVelocity * Time.fixedDeltaTime);
     }
 
